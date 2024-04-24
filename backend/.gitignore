@@ -9,4 +9,5 @@ results
 checkpoints_bak
 cityscapes
 test_results
-secrets
+# secrets
+# model
