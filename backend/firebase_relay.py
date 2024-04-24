@@ -46,19 +46,26 @@ def upload_to_firebase(local_file_path, bucket_directory):
 
 
 def get_latest_image(directory):
-    bucket = storage.bucket()
-    # Ensure the directory path ends with a '/'
+    # Ensure the directory path ends with '/'
     if not directory.endswith('/'):
         directory += '/'
+
+    # Initialize storage bucket
+    bucket = storage.bucket()
+
     # List blobs in the specified directory
     blobs = bucket.list_blobs(prefix=directory)
     latest_blob = None
-    latest_name = ""
+    latest_time = None
+
     for blob in blobs:
-        # Check if this blob's name is greater than the latest known, which means it's the newest if sorted by name
-        if not latest_blob or blob.name > latest_name:
+        # Reload metadata
+        blob.reload()
+        # Compare the 'updated' time
+        if not latest_blob or blob.updated > latest_time:
             latest_blob = blob
-            latest_name = blob.name
+            latest_time = blob.updated
+
     return latest_blob
 
 

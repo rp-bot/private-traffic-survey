@@ -21,8 +21,16 @@ const DownloadRecentImage = () => {
 			const listRef = firebase.storage().ref("processed_images");
 			const result = await listRef.listAll();
 			if (result.items.length > 0) {
-				result.items.sort((a, b) => b.name.localeCompare(a.name));
-				const recentFileRef = result.items[0];
+				const filesWithMetadata = await Promise.all(
+					result.items.map(async (item) => ({
+						fileRef: item,
+						metadata: await item.getMetadata(),
+					}))
+				);
+				filesWithMetadata.sort((a, b) =>
+					b.metadata.timeCreated.localeCompare(a.metadata.timeCreated)
+				);
+				const recentFileRef = filesWithMetadata[0].fileRef;
 				const url = await recentFileRef.getDownloadURL();
 				setImageUri(url);
 				setModalVisible(true);
@@ -34,6 +42,7 @@ const DownloadRecentImage = () => {
 			Alert.alert("Failed to download the image.");
 		}
 	};
+
 	const savePicture = async () => {
 		if (imageUri) {
 			try {
