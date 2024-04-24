@@ -14,6 +14,8 @@ from firebase_admin import storage
 #from PIL import Image
 import numpy as np
 import cv2
+import sys
+
 cred = credentials.Certificate("backend/private-traffic-survey-firebase-adminsdk-rlpma-d297ab2207.json")
 
 firebase_admin.initialize_app(cred, {
@@ -23,26 +25,29 @@ firebase_admin.initialize_app(cred, {
 })#end of initialization
 
 bucket = storage.bucket()
-blob = bucket.get_blob("AC448CB6-E2A8-43CD-A3C2-F44B89EA2301.jpg")
+
+#Get all imges in storage
+blobs = list(bucket.list_blobs(prefix = 'new_images/'))
+
+#Get the name of the most recent image
+x = len(blobs)
+x = x - 1
+blob = blobs[x].name
+
+
+blob2 = bucket.get_blob(blob)
 
 #blob -> array -> image
-
 #convert blob to string, then string to array of bytes
-arr = np.frombuffer(blob.download_as_string(), np.uint8)
-
-#img = Image.frombytes("RGBA", (300, 300), arr)
-
-#img.show()
+arr = np.frombuffer(blob2.download_as_string(), np.uint8)
 
 #get actual image
 img = cv2.imdecode(arr, cv2.COLOR_BGR2BGR555)
 
-#img = cv2.imread(img)
-
-cv2.imshow('image', img)
-cv2.waitKey(5000)
-
-cv2.destroyAllWindows()
+#write code to datasets/dat file
+###with open("backend/datasets/data") as outFile:
+###    outFile.write(img)
 
 
-#next I want to write those image to the dataset file
+
+#take most recent in test_results and upload to firebase
