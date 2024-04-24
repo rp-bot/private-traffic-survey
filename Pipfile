@@ -9,6 +9,12 @@ jupyter = "*"
 ipywidgets = "*"
 torch = "*"
 torchvision = "*"
+numpy = "*"
+pillow = "*"
+scikit-learn = "*"
+tqdm = "*"
+matplotlib = "*"
+visdom = "*"
 
 [dev-packages]
 ipykernel = "*"
