@@ -157,14 +157,14 @@ export default function App() {
 						}}
 					>
 						<Button
-							title="Re-take"
+							title="Discard"
 							onPress={() => setImage(null)}
-							icon="retweet"
+							icon="cross"
 						/>
 						<Button
-							title="Save"
+							title="Upload"
 							onPress={uploadClickedPic}
-							icon="check"
+							icon="arrow-up"
 						/>
 					</View>
 				) : (
